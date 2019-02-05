@@ -39,24 +39,24 @@ class TestBank(unittest.TestCase):
         self.assertEqual(einstein, account)
 
     # Extra Task
-    # def test_open_account_number_needs_to_be_unique(self):
-    #     bank = app.Bank('GLS')
-    #     self.assertEqual(bank.accounts, [])
-    #
-    #     # Add an account
-    #     account = {
-    #         'number': 1,
-    #         'firstname': 'Albert',
-    #         'lastname': 'Einstein',
-    #     }
-    #     bank.open_account(account)
-    #
-    #     message = 'Account number 1 already taken!'
-    #     with self.assertRaisesRegex(AssertionError, message):
-    #         bank.open_account(account)
-    #
-    #     # Only one account entry is saved in accounts
-    #     self.assertEqual(bank.accounts, [account])
+    def test_open_account_number_needs_to_be_unique(self):
+        bank = app.Bank('GLS')
+        self.assertEqual(bank.accounts, [])
+
+        # Add an account
+        account = {
+            'number': 1,
+            'firstname': 'Albert',
+            'lastname': 'Einstein',
+        }
+        bank.open_account(account)
+
+        message = 'Account number 1 already taken!'
+        with self.assertRaisesRegex(AssertionError, message):
+            bank.open_account(account)
+
+        # Only one account entry is saved in accounts
+        self.assertEqual(bank.accounts, [account])
 
     def test_add_transaction(self):
         bank = app.Bank('GLS')
@@ -114,52 +114,52 @@ class TestBank(unittest.TestCase):
         self.assertEqual(bank.transactions, [])
 
     # Extra Task
-    # def test_add_transaction_with_invalid_sender(self):
-    #     bank = app.Bank('GLS')
-    #     self.assertEqual(bank.transactions, [])
-    #
-    #     # Add account
-    #     einstein = bank.open_account({
-    #         'number': 1,
-    #         'firstname': 'Albert',
-    #         'lastname': 'Einstein',
-    #     })
-    #
-    #     # Just the dict
-    #     ehrenfest = {
-    #         'number': 2,
-    #         'firstname': 'Paul',
-    #         'lastname': 'Ehrenfest',
-    #     }
-    #
-    #     message = 'Sender has no account yet!'
-    #     with self.assertRaisesRegex(AssertionError, message):
-    #         bank.add_transaction(sender=ehrenfest,
-    #                              recipient=einstein,
-    #                              subject='Bücher',
-    #                              amount=100)
-    #
-    # def test_add_transaction_with_invalid_recipient(self):
-    #     bank = app.Bank('GLS')
-    #     self.assertEqual(bank.transactions, [])
-    #
-    #     # Just the dict
-    #     einstein = {
-    #         'number': 1,
-    #         'firstname': 'Albert',
-    #         'lastname': 'Einstein',
-    #     }
-    #
-    #     # Add account
-    #     ehrenfest = bank.open_account({
-    #         'number': 2,
-    #         'firstname': 'Paul',
-    #         'lastname': 'Ehrenfest',
-    #     })
-    #
-    #     message = 'Recipient has no account yet!'
-    #     with self.assertRaisesRegex(AssertionError, message):
-    #         bank.add_transaction(sender=ehrenfest,
-    #                              recipient=einstein,
-    #                              subject='Bücher',
-    #                              amount=100)
+    def test_add_transaction_with_invalid_sender(self):
+        bank = app.Bank('GLS')
+        self.assertEqual(bank.transactions, [])
+
+        # Add account
+        einstein = bank.open_account({
+            'number': 1,
+            'firstname': 'Albert',
+            'lastname': 'Einstein',
+        })
+
+        # Just the dict
+        ehrenfest = {
+            'number': 2,
+            'firstname': 'Paul',
+            'lastname': 'Ehrenfest',
+        }
+
+        message = 'Sender has no account yet!'
+        with self.assertRaisesRegex(AssertionError, message):
+            bank.add_transaction(sender=ehrenfest,
+                                 recipient=einstein,
+                                 subject='Bücher',
+                                 amount=100)
+
+    def test_add_transaction_with_invalid_recipient(self):
+        bank = app.Bank('GLS')
+        self.assertEqual(bank.transactions, [])
+
+        # Just the dict
+        einstein = {
+            'number': 1,
+            'firstname': 'Albert',
+            'lastname': 'Einstein',
+        }
+
+        # Add account
+        ehrenfest = bank.open_account({
+            'number': 2,
+            'firstname': 'Paul',
+            'lastname': 'Ehrenfest',
+        })
+
+        message = 'Recipient has no account yet!'
+        with self.assertRaisesRegex(AssertionError, message):
+            bank.add_transaction(sender=ehrenfest,
+                                 recipient=einstein,
+                                 subject='Bücher',
+                                 amount=100)
