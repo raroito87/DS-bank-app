@@ -5,9 +5,9 @@ class Bank:
         self.transactions = []
 
     def open_account(self, account):
-        numbers = []
-        for item in self.accounts:
-            numbers.append(item['number'])
+        numbers = [item['number'] for item in self.accounts] 
+        #for item in self.accounts:
+            #numbers.append(item['number'])
         assert account['number'] not in numbers, 'Account number 1 already taken!'
         self.accounts.append(account)
         return account
@@ -19,6 +19,3 @@ class Bank:
         transaction = (sender, recipient, subject, amount)#tuple is no changeable, more secure
         self.transactions.append(transaction)
         return transaction
-
-
-
