@@ -21,7 +21,7 @@ install:
 
   # Create environment
   - conda env create --file environment.yml
-  - source actifvate neue-fische-bank-app
+  - source activate neue-fische-bank-app
 
 script:
   - flake8
