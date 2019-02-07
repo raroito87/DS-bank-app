@@ -9,5 +9,8 @@ class Transaction:
         self.subject = subject
         self.amount = amount
 
+    # def info(self):
+    #     return 'From ' + str(self.sender) + ' to ' + str(self.recipient) + ': ' + self.subject + ' - ' + str(self.amount) + ' €'
+
     def info(self):
-        return 'From ' + str(self.sender) + ' to ' +str(self.recipient) + ': ' + self.subject + ' - ' + str(self.amount) + ' €'
+        return 'From {} to {}: {} - {} €'.format(self.sender, self.recipient, self.subject, self.amount)

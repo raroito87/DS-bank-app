@@ -2,10 +2,6 @@ language: python
 python:
   - "3.6"
 
-branches:
-  only:
-    - master
-
 cache:
   directories:
     - $HOME/.conda/pkgs
@@ -25,7 +21,7 @@ install:
 
   # Create environment
   - conda env create --file environment.yml
-  - source activate neue-fische-bank-app
+  - source actifvate neue-fische-bank-app
 
 script:
   - flake8

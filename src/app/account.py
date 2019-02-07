@@ -7,16 +7,23 @@ class Account:
         self.number = number
         self.balance = balance
 
+    # def info(self):
+    #     return 'Number ' + str(self.number) + ': ' + self.firstname + ' ' + self.lastname + ' - ' + str(self.balance) + ' €'
+
+    # def info(self):
+    #     return f'Number {self.number}: {self.firstname} {self.lastname} - {self.balance} €'
+
     def info(self):
-        return 'Number ' + str(self.number) + ': ' + self.firstname + ' ' + self.lastname + ' - ' + str(self.balance) + ' €'
+        template = 'Number {}: {} {} - {} €'.format(self.number, self.firstname, self.lastname, self.balance)
+        return template
 
     def has_funds_for(self, amount):
-        return amount < self.balance
+        return amount <= self.balance
 
     def add_to_balance(self, amount):
         assert amount > 0, 'Amount needs to be greater than 0'
         self.balance += amount
 
     def subtract_from_balance(self, amount):
-        assert amount < self.balance, 'Account has not enough funds'
+        assert amount <= self.balance, 'Account has not enough funds'
         self.balance -= amount
