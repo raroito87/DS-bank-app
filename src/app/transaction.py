@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+import uuid
 
 
 class TransactionCategory(Enum):
@@ -19,7 +20,7 @@ class Transaction():
         self.recipient = recipient
         self.subject = subject
         self.amount = amount
-        self.transactionID = datetime.now().strftime('%Y%m%d%H%M%S')
+        self.transactionID = datetime.now().strftime('%Y%m%d%H%M%S') + '_' + str(uuid.uuid4())
         if category:
             self.category = category
         else:
@@ -50,5 +51,5 @@ class Transaction():
     def _get_minute(self):
         return int(self.transactionID[10:12])
 
-    def _get_seconc(self):
+    def _get_second(self):
         return int(self.transactionID[12:14])

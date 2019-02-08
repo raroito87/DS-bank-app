@@ -1,6 +1,7 @@
 import unittest
 import app
 import math
+import uuid
 from datetime import datetime
 
 
@@ -264,37 +265,13 @@ class TestBank(unittest.TestCase):
         self.assertEqual(bank.transactions, [])
 
     def test_obtain_account_statement(self):
-        bank = app.Bank('DKB')
-
-        firstname = 'Rafael'
-        lastname = 'Rodriguez'
-        for idx in range(0, 100):
-            bank.open_account(app.Account(firstname=firstname + str(idx), lastname=lastname + str(idx), number=idx, balance=10000000.0))
+        bank = self._create_bank_with_100_accounts_different_balances()
 
         self.assertEqual(len(bank.accounts), 100)
 
-        # create transactions forcing year and month
-        for sender_index in range(0, 200):
-            recipient_index = sender_index + 1
-            sender_index = int(math.fmod(sender_index, len(bank.accounts)))
-            recipient_index = int(math.fmod(recipient_index, len(bank.accounts)))
-            transaction = bank.add_transaction(sender=bank.accounts[sender_index], recipient=bank.accounts[recipient_index], subject='pocketmoney', amount=10 + sender_index/2)
-            transaction.transactionID = '201901' + datetime.now().strftime('%d%H%M%S')  # this month
-
-        for sender_index in range(0, 200):
-            recipient_index = sender_index + 1
-            sender_index = int(math.fmod(sender_index, len(bank.accounts)))
-            recipient_index = int(math.fmod(recipient_index, len(bank.accounts)))
-            transaction = bank.add_transaction(sender=bank.accounts[sender_index], recipient=bank.accounts[recipient_index], subject='pocketmoney', amount=10 + sender_index/2)
-            transaction.transactionID = '201908' + datetime.now().strftime('%d%H%M%S')  # future
-
-
-        for sender_index in range(0, 200):
-            recipient_index = sender_index + 1
-            sender_index = int(math.fmod(sender_index, len(bank.accounts)))
-            recipient_index = int(math.fmod(recipient_index, len(bank.accounts)))
-            transaction = bank.add_transaction(sender=bank.accounts[sender_index], recipient=bank.accounts[recipient_index], subject='pocketmoney', amount=10 + sender_index/2)
-            transaction.transactionID = '202003' + datetime.now().strftime('%d%H%M%S')  # future
+        self._add_transactions_to_Bank(bank, 200, '2019', '01')
+        self._add_transactions_to_Bank(bank, 200, '2019', '08')
+        self._add_transactions_to_Bank(bank, 200, '2020', '03')
 
         self.assertEqual(len(bank.transactions), 600)
 
@@ -313,45 +290,61 @@ class TestBank(unittest.TestCase):
         self.assertEqual(len(account_statement), 8)
 
     def test_obtain_transaction_categories(self):
-        bank = app.Bank('DKB')
-
-        firstname = 'Rafael'
-        lastname = 'Rodriguez'
-        for idx in range(0, 100):
-            bank.open_account(app.Account(firstname=firstname + str(idx), lastname=lastname + str(idx), number=idx, balance=10000000.0))
+        bank = self._create_bank_with_100_accounts_different_balances()
 
         self.assertEqual(len(bank.accounts), 100)
 
-        # all transactions unkown
-        for sender_index in range(0, 200):
-            recipient_index = sender_index + 1
-            sender_index = int(math.fmod(sender_index, len(bank.accounts)))
-            recipient_index = int(math.fmod(recipient_index, len(bank.accounts)))
-            transaction = bank.add_transaction(sender=bank.accounts[sender_index], recipient=bank.accounts[recipient_index],
-                                               subject='pocketmoney', amount=10 + sender_index/2)
-            transaction.transactionID = '201901' + datetime.now().strftime('%d%H%M%S')  # this month
-
-        # all transactions sex
-        for sender_index in range(0, 100):
-            recipient_index = sender_index + 1
-            sender_index = int(math.fmod(sender_index, len(bank.accounts)))
-            recipient_index = int(math.fmod(recipient_index, len(bank.accounts)))
-            transaction = bank.add_transaction(sender=bank.accounts[sender_index], recipient=bank.accounts[recipient_index],
-                                               subject='pocketmoney', amount=10 + sender_index/2,
-                                               category=app.TransactionCategory.SEX)
-            transaction.transactionID = '201901' + datetime.now().strftime('%d%H%M%S')  # this month
-
-        # all transactions drugs
-        for sender_index in range(0, 50):
-            recipient_index = sender_index + 1
-            sender_index = int(math.fmod(sender_index, len(bank.accounts)))
-            recipient_index = int(math.fmod(recipient_index, len(bank.accounts)))
-            transaction = bank.add_transaction(sender=bank.accounts[sender_index], recipient=bank.accounts[recipient_index],
-                                               subject='pocketmoney', amount=10 + sender_index/2,
-                                               category=app.TransactionCategory.DRUGS)
-            transaction.transactionID = '201901' + datetime.now().strftime('%d%H%M%S')  # this month
+        self._add_transactions_to_Bank(bank, 200, '2019', '01', app.TransactionCategory.UNKNOWN)
+        self._add_transactions_to_Bank(bank, 100, '2019', '01', app.TransactionCategory.SEX)
+        self._add_transactions_to_Bank(bank, 50, '2019', '01', app.TransactionCategory.DRUGS)
 
         self.assertEqual(len(bank.get_unkown_transactions()), 200)
         self.assertEqual(len(bank.get_sex_transactions()), 100)
         self.assertEqual(len(bank.get_drugs_transactions()), 50)
         self.assertEqual(len(bank.get_rockandroll_transactions()), 0)
+
+    def test_transaction_id_is_unique(self):
+        bank = self._create_bank_with_100_accounts_different_balances()
+
+        self.assertEqual(len(bank.accounts), 100)
+
+        self._add_transactions_to_Bank(bank, 200, '2019', '01')
+        self._add_transactions_to_Bank(bank, 200, '2019', '08')
+        self._add_transactions_to_Bank(bank, 200, '2020', '03')
+
+        self.assertEqual(len(bank.transactions), 600)
+
+        dict_id = {}
+        for t in bank.transactions:
+            dict_id[t.transactionID] = ''
+
+        #  all the id are different, no key repeated
+        self.assertEqual(len(bank.transactions), len(dict_id))
+
+
+    def _create_bank_with_100_accounts_different_balances(self):
+        bank = app.Bank('DKB')
+
+        firstname = 'Rafael'
+        lastname = 'Rodriguez'
+        for idx in range(0, 100):
+            bank.open_account(app.Account(firstname=firstname + str(idx), lastname=lastname + str(idx), number=idx,
+                                          balance=1000.0 + 10*idx))
+
+        return bank
+
+    def _add_transactions_to_Bank(self, bank, number_of_transactions, year, month, category=app.TransactionCategory.UNKNOWN):
+        assert type(year) == str
+        assert type(month) == str
+        assert type(number_of_transactions) == int and number_of_transactions > 0
+        assert len(bank.accounts) > 1  # at least 2 accounts to generate transfers
+
+        for sender_index in range (0, number_of_transactions):
+            recipient_index = sender_index + 1  #
+            sender_index = int(math.fmod(sender_index, len(bank.accounts)))
+            recipient_index = int(math.fmod(recipient_index, len(bank.accounts)))
+            transaction = bank.add_transaction(sender=bank.accounts[sender_index], recipient=bank.accounts[recipient_index],
+                                               subject='pocketmoney', amount=10 + sender_index/2,
+                                               category=category)
+
+            transaction.transactionID = year + month + datetime.now().strftime('%d%H%M%S') + '_' + str(uuid.uuid4())# this month
