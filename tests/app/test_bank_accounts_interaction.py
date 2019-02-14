@@ -46,23 +46,23 @@ class TestBankInitialization(unittest.TestCase):
         self.assertTrue(bank.accounts.equals(accounts))
 
     # Extra Task
-    # def test_open_account_number_needs_to_be_unique(self):
-    #     bank = app.Bank('GLS')
-    #
-    #     # Hint: Filter the accounts id column and check the lenght of the returning dataframe to be 0
-    #
-    #     # Add an account
-    #     bank.open_account(account_id=1,
-    #                       firstname='Albert',
-    #                       lastname='Einstein',
-    #                       balance=100.)
-    #
-    #     message = 'Account number 1 already taken!'
-    #     with self.assertRaisesRegex(AssertionError, message):
-    #         bank.open_account(account_id=1,
-    #                           firstname='Paul',
-    #                           lastname='Ehrenfest',
-    #                           balance=55.5)
-    #
-    #     # Only one account entry is saved in accounts
-    #     self.assertEqual(len(bank.accounts), 1)
+    def test_open_account_number_needs_to_be_unique(self):
+        bank = app.Bank('GLS')
+
+        # Hint: Filter the accounts id column and check the lenght of the returning dataframe to be 0
+
+        # Add an account
+        bank.open_account(account_id=1,
+                          firstname='Albert',
+                          lastname='Einstein',
+                          balance=100.)
+
+        message = 'Account number 1 already taken!'
+        with self.assertRaisesRegex(AssertionError, message):
+            bank.open_account(account_id=1,
+                              firstname='Paul',
+                              lastname='Ehrenfest',
+                              balance=55.5)
+
+        # Only one account entry is saved in accounts
+        self.assertEqual(len(bank.accounts), 1)
